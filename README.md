@@ -286,15 +286,17 @@ We kindly encourage citation of our work if you find it useful.
       primaryClass={cs.CV},
       url={https://arxiv.org/abs/2510.22200}, 
 }
-@misc{meituanlongcatteam2025longcatvideoavatar15technicalreport,
+
+@misc{meituanlongcatteam2026longcatvideoavatar15technicalreport,
       title={LongCat-Video-Avatar 1.5 Technical Report}, 
-      author={Meituan LongCat Team},
+      author={Meituan LongCat Team and Xunliang Cai and Meng Cheng and Feng Gao and Zhe Kong and Jiamu Li and Le Li and Weiheng Li and Hongyu Liu and Shuai Tan and Xiaoming Wei and Tianyu Yang and Yong Zhang},
       year={2026},
-      eprint={},
+      eprint={2605.26486},
       archivePrefix={arXiv},
       primaryClass={cs.CV},
-      url={}, 
+      url={https://arxiv.org/abs/2605.26486}, 
 }
+
 @misc{meituanlongcatteam2025longcatvideoavatartechnicalreport,
       title={LongCat-Video-Avatar Technical Report}, 
       author={Meituan LongCat Team},
