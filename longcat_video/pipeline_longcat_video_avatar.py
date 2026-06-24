@@ -171,7 +171,8 @@ class LongCatVideoAvatarPipeline:
         )
         text_input_ids, mask = text_inputs.input_ids, text_inputs.attention_mask
 
-        prompt_embeds = self.text_encoder(text_input_ids.to(device), mask.to(device)).last_hidden_state
+        encoder_device = next(self.text_encoder.parameters()).device
+        prompt_embeds = self.text_encoder(text_input_ids.to(encoder_device), mask.to(encoder_device)).last_hidden_state
         prompt_embeds = prompt_embeds.to(dtype=dtype, device=device)
         mask = mask.to(device=device)
         mask = torch.cat([mask]*num_videos_per_prompt, dim=0)
@@ -592,10 +593,11 @@ class LongCatVideoAvatarPipeline:
         audio_features = audio_features.to(self.audio_encoder.dtype)
 
         # ---- Whisper encoder：mel → hidden states ----
+        encoder_device = next(self.audio_encoder.parameters()).device
         enc_chunks = []
         for i in range(0, audio_features.shape[-1], ENC_CHUNK):
             chunk_hs = self.audio_encoder.encoder(
-                audio_features[:, :, i: i + ENC_CHUNK].to(device),
+                audio_features[:, :, i: i + ENC_CHUNK].to(encoder_device),
                 output_hidden_states=True,
             ).hidden_states                           # tuple: (n_layers+1,) x [1, T_enc, D]
             enc_chunks.append(torch.stack(chunk_hs, dim=2))  # [1, T_enc, n_layers, D]
@@ -1534,7 +1536,7 @@ class LongCatVideoAvatarPipeline:
                 for lora_key, lora_network in self.dit.lora_dict.items():
                     for lora in lora_network.loras:
                         lora.to(device, non_blocking=True)
-        if self.text_encoder is not None:
+        if self.text_encoder is not None and os.environ.get("LONGCAT_TEXT_ENCODER_DEVICE", "").lower() != "cpu":
             self.text_encoder = self.text_encoder.to(device, non_blocking=True)
         if self.vae is not None:
             self.vae = self.vae.to(device, non_blocking=True)

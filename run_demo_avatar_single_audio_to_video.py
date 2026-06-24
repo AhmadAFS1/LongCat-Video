@@ -141,7 +141,9 @@ def generate(args):
         audio_model_checkpoint_path = os.path.join(checkpoint_dir, 'chinese-wav2vec2-base')
     elif model_type == "avatar-v1.5":
         audio_model_checkpoint_path = os.path.join(checkpoint_dir, 'whisper-large-v3')
-    audio_encoder = get_audio_encoder(audio_model_checkpoint_path, model_type).to(local_rank)
+    audio_encoder = get_audio_encoder(audio_model_checkpoint_path, model_type)
+    if os.environ.get("LONGCAT_AUDIO_ENCODER_DEVICE", "").lower() != "cpu":
+        audio_encoder = audio_encoder.to(local_rank)
     audio_feature_extractor = get_audio_feature_extractor(audio_model_checkpoint_path, model_type)
 
     vocal_separator_path = os.path.join(checkpoint_dir, 'vocal_separator/Kim_Vocal_2.onnx')
